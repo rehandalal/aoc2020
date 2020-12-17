@@ -6,20 +6,19 @@ class P1(Puzzle):
     milestone = 2020
 
     def parse(self, data):
-        return [int(d) for d in data.strip("\n").split(",")]
+        parsed = [None] * self.milestone
+        for i, d in enumerate(data.strip("\n").split(",")):
+            parsed[i] = int(d)
+        return parsed
 
     def solve(self, data):
         last_spoken = {}
-        for i, h in enumerate(data):
-            last_spoken[h] = i + 1
-        data.append(0)
-        for i in range(len(data), self.milestone):
-            prev = data[-1]
-            if prev in last_spoken:
-                data.append(len(data) - last_spoken[prev])
-            else:
-                data.append(0)
-            last_spoken[prev] = i
+        for i in range(self.milestone - 1):
+            j = i + 1
+            if data[j] is None:
+                last = last_spoken.get(data[i], 0)
+                data[j] = j - last if last > 0 else 0
+            last_spoken[data[i]] = j
         return data[-1]
 
 
